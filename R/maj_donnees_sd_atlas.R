@@ -28,10 +28,10 @@ maj_donnees_sd_atlas <- function(
 
   df_a_jour <- sf::st_read(dsn = fichier_qgis_a_jour)
 
-  df_anciennes_donnees <- read
-  -	Opérer une jointure gauche pour ajouter à df_a_jour les UUID existants dans df_anciennes_donnees
-  -	Compléter les UUID manquants sur les nouvelles observations
-  -	Exporter en csv
+  # df_anciennes_donnees <- read
+  # -	Opérer une jointure gauche pour ajouter à df_a_jour les UUID existants dans df_anciennes_donnees
+  # -	Compléter les UUID manquants sur les nouvelles observations
+  # -	Exporter en csv
 
 }
 
