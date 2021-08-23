@@ -1,4 +1,4 @@
-#' Mettre à jour les données de pêches SD OFB pour la plateforme régionale des données naturalistes
+#' Mettre en former les données de pêches SD OFB pour la plateforme régionale des données naturalistes
 #'
 #' La fonction compare une version à jour du ficj=hier de données QG
 #'
@@ -38,6 +38,8 @@ mef_donnees_sd_atlas <- function(fichier_shp_a_jour,
                        crs_fin = crs_fin)
 
 # ajout des colonnes de coordonnées au dataframe, passage en format long et renommage
+# NB on ajoute l'uuid du jeu de données qui est identique pour ttes les observations
+# c'est celui indiqué sur la fiche de métadonnées metadonnee_jeu_donnees.docx
   df <- sd_geo %>%
     st_drop_geometry() %>%
     bind_cols(coords) %>%
@@ -59,8 +61,8 @@ mef_donnees_sd_atlas <- function(fichier_shp_a_jour,
       UUIDgenerate(n = nrow(df)) %>%
       as.data.frame() %>%
       purrr::set_names("uuid_observation")
-#
-# # ajout des UUID, renommage et mise en ordre des colonnes
+
+# ajout des UUID, renommage et mise en ordre des colonnes
   df <- df %>%
     bind_cols(uuid_observation) %>%
     select(uuid = uuid_observation,
@@ -89,14 +91,16 @@ mef_donnees_sd_atlas <- function(fichier_shp_a_jour,
   # ajout des codes taxref ; gestion des vandoises indéterminées VAX
   data("passerelle_taxo")
   df <- df %>%
-    left_join(y = passerelle_taxo) %>%
+    left_join(y = passerelle_taxo %>%
+                rename(code_espece = esp_code_alternatif)) %>%
     select(-esp_code_sandre, -esp_id, -esp_nom_latin) %>%
     mutate(
       esp_code_taxref = ifelse(
-        is.na(esp_code_taxref) & esp_code_alternatif == "VAX",
+        is.na(esp_code_taxref) & code_espece == "VAX",
         yes = 194072,
         no = esp_code_taxref)
     )
+
 
   # agrégation pour éviter des doublons s'il y a eu des regroupements de taxons
   df <- df %>%

@@ -2,7 +2,7 @@
 % Please edit documentation in R/mef_donnees_sd_atlas.R
 \name{mef_donnees_sd_atlas}
 \alias{mef_donnees_sd_atlas}
-\title{Mettre à jour les données de pêches SD OFB pour la plateforme régionale des données naturalistes}
+\title{Mettre en former les données de pêches SD OFB pour la plateforme régionale des données naturalistes}
 \usage{
 mef_donnees_sd_atlas(fichier_shp_a_jour, crs_init = 2154, crs_fin = 4326)
 }
