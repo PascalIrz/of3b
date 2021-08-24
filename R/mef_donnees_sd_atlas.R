@@ -11,10 +11,15 @@
 #'
 #' @importFrom atlas get_coords recode_and_filter_species
 #' @importFrom dplyr mutate select mutate_at vars bind_cols left_join across summarise ungroup rename
+#' @importFrom magrittr %>%
+#' @importFrom dplyr group_by
 #' @importFrom tidyr pivot_longer
+#' @importFrom stringr str_replace str_sub
 #' @importFrom rgdal readOGR
 #' @importFrom sf st_as_sf st_drop_geometry
 #' @importFrom uuid UUIDgenerate
+#' @importFrom utils data
+#' @importFrom purrr set_names
 #'
 #' @examples
 #' \dontrun{
@@ -28,9 +33,9 @@ mef_donnees_sd_atlas <- function(fichier_shp_a_jour,
 {
 
   # lecture des données shp
-  sd_geo <- rgdal::readOGR(fichier_shp_a_jour,
-                           encoding = "UTF-8") %>%
-    sf::st_as_sf()
+  sd_geo <- readOGR(fichier_shp_a_jour,
+                    encoding = "UTF-8") %>%
+    st_as_sf()
 
   # collecte des coordonnées dans le bon CRS
   coords <- get_coords(sf_obj = sd_geo,
@@ -58,7 +63,7 @@ mef_donnees_sd_atlas <- function(fichier_shp_a_jour,
 
   # gestion de qq cas particuliers de codes
   df <- df %>%
-    atlas::recode_and_filter_species()
+    recode_and_filter_species()
 
   # agrégation pour éviter des doublons s'il y a eu des regroupements de taxons
   df <- df %>%
@@ -69,7 +74,7 @@ mef_donnees_sd_atlas <- function(fichier_shp_a_jour,
   # génération des UUID (ne fonctionne pas à l'intérieur d'un mutate auquel cas ttes obs ont le même uuid)
   unique_obs_id <- UUIDgenerate(n = nrow(df)) %>%
     as.data.frame() %>%
-    purrr::set_names("unique_obs_id")
+    set_names("unique_obs_id")
 
   # ajout des UUID, renommage et mise en ordre des colonnes
   df <- df %>%
