@@ -10,6 +10,9 @@
 #' @return Le dataframe avec les données au format souhaité (long, nommage et typage des variables).
 #' @export
 #'
+#' @importFrom readr read_csv2 write_csv2
+#' @importFrom dplyr mutate_at vars starts_with rename left_join select mutate everything
+#'
 #' @examples
 #' \dontrun{
 #' maj_donnees_sd_atlas(
@@ -25,13 +28,37 @@ maj_donnees_sd_atlas <- function(
   )
 
 {
+# Lecture du fichier shapefile à jour
+  sd_a_jour <- mef_donnees_sd_atlas(fichier_shp_a_jour = fichier_shp_a_jour)
 
-  df_a_jour <- sf::st_read(dsn = fichier_qgis_a_jour)
+# lecture du fichier csv du millésime précédent
+  sd_ancien <- read_csv2(file = fichier_csv_precedent) %>%
+    mutate_at(vars(starts_with("date")), as.character) %>%
+    rename(unique_obs_id_old = unique_obs_id)
 
-  # df_anciennes_donnees <- read
-  # -	Opérer une jointure gauche pour ajouter à df_a_jour les UUID existants dans df_anciennes_donnees
-  # -	Compléter les UUID manquants sur les nouvelles observations
-  # -	Exporter en csv
+# assemblage des deux
+  assemblage <- sd_a_jour %>%
+    rename(unique_obs_id_new = unique_obs_id) %>%
+    left_join(sd_ancien, by = c("unique_dataset_id", "unique_ope_id", "date_peche",
+                                "code_exutoire", "code_station", "localisation", "x_wgs84", "y_wgs84",
+                                "ctxte_peche", "code_espece", "esp_code_taxref")) %>%
+    select(unique_obs_id_new, unique_obs_id, everything()) %>%
+    select(-effectif.y) %>%
+    rename(effectif = effectif.x)
+
+# gestion des uuid. Si l'observation est nouvelle, il est créé, sinon il est conservé
+# mêrme en cas de changement de statut de présence / absence
+  assemblage <- assemblage %>%
+    mutate(uuid = ifelse(is.na(unique_obs_id), unique_obs_id_new, unique_obs_id)) %>%
+    select(-unique_obs_id, -unique_obs_id_new) %>%
+    rename(unique_obs_id = uuid) %>%
+    select(unique_obs_id,
+           everything())
+
+# sortie en csv du fichier de résultat
+  write_csv2(sd_ancien, file = fichier_csv_a_jour)
+
+
 
 }
 

@@ -25,21 +25,21 @@ mef_donnees_sd_atlas <- function(fichier_shp_a_jour,
                                  crs_init = 2154,
                                  crs_fin = 4326)
 
-  {
+{
 
-# lecture des données shp
+  # lecture des données shp
   sd_geo <- rgdal::readOGR(fichier_shp_a_jour,
-                       encoding = "UTF-8") %>%
+                           encoding = "UTF-8") %>%
     sf::st_as_sf()
 
-# collecte des coordonnées dans le bon CRS
+  # collecte des coordonnées dans le bon CRS
   coords <- get_coords(sf_obj = sd_geo,
                        crs_init = crs_init,
                        crs_fin = crs_fin)
 
-# ajout des colonnes de coordonnées au dataframe, passage en format long et renommage
-# NB on ajoute l'uuid du jeu de données qui est identique pour ttes les observations
-# c'est celui indiqué sur la fiche de métadonnées metadonnee_jeu_donnees.docx
+  # ajout des colonnes de coordonnées au dataframe, passage en format long et renommage
+  # NB on ajoute l'uuid du jeu de données qui est identique pour ttes les observations
+  # c'est celui indiqué sur la fiche de métadonnées metadonnee_jeu_donnees.docx
   df <- sd_geo %>%
     st_drop_geometry() %>%
     bind_cols(coords) %>%
@@ -56,18 +56,27 @@ mef_donnees_sd_atlas <- function(fichier_shp_a_jour,
            ope_id = str_replace(uuid, '\\{', ''),
            ope_id = str_replace(ope_id, '\\}', ''))
 
-# génération des UUID (ne fonctionne pas à l'intérieur d'un mutate auquel cas ttes obs ont le même uuid)
-  uuid_observation <- df %>%
-      UUIDgenerate(n = nrow(df)) %>%
-      as.data.frame() %>%
-      purrr::set_names("uuid_observation")
-
-# ajout des UUID, renommage et mise en ordre des colonnes
+  # gestion de qq cas particuliers de codes
   df <- df %>%
-    bind_cols(uuid_observation) %>%
-    select(uuid = uuid_observation,
+    atlas::recode_and_filter_species()
+
+  # agrégation pour éviter des doublons s'il y a eu des regroupements de taxons
+  df <- df %>%
+    group_by(across(c(-effectif))) %>%
+    summarise(effectif = max(effectif, na.rm = TRUE)) %>%
+    ungroup()
+
+  # génération des UUID (ne fonctionne pas à l'intérieur d'un mutate auquel cas ttes obs ont le même uuid)
+  unique_obs_id <- UUIDgenerate(n = nrow(df)) %>%
+    as.data.frame() %>%
+    purrr::set_names("unique_obs_id")
+
+  # ajout des UUID, renommage et mise en ordre des colonnes
+  df <- df %>%
+    bind_cols(unique_obs_id) %>%
+    select(unique_obs_id,
            unique_dataset_id,
-           ope_id,
+           unique_ope_id = ope_id,
            date_peche = Date_peche,
            date_saisie = Date_saisi,
            date_modif = Date_modif,
@@ -76,17 +85,13 @@ mef_donnees_sd_atlas <- function(fichier_shp_a_jour,
            localisation = Bassin,
            x_wgs84,
            y_wgs84,
-           annee,
-           organisme,
-           type_peche,
+           ctxte_peche = type_peche,
            code_espece,
            effectif) %>%
     mutate_at(vars(code_station, localisation, date_peche),
               as.character)
 
-  # gestion de qq cas particuliers de codes
-  df <- df %>%
-    atlas::recode_and_filter_species()
+
 
   # ajout des codes taxref ; gestion des vandoises indéterminées VAX
   data("passerelle_taxo")
@@ -100,14 +105,6 @@ mef_donnees_sd_atlas <- function(fichier_shp_a_jour,
         yes = 194072,
         no = esp_code_taxref)
     )
-
-
-  # agrégation pour éviter des doublons s'il y a eu des regroupements de taxons
-  df <- df %>%
-    group_by(across(c(-effectif))) %>%
-    summarise(effectif = max(effectif, na.rm = TRUE)) %>%
-    ungroup() %>%
-    rename(esp_code_alternatif = code_espece)
 
   df
 
