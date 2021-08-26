@@ -4,32 +4,25 @@
 \alias{maj_donnees_sd_atlas}
 \title{Mettre à jour les données de pêches SD OFB pour la plateforme régionale des données naturalistes}
 \usage{
-maj_donnees_sd_atlas(
-  fichier_shp_a_jour,
-  fichier_csv_precedent,
-  fichier_csv_a_jour
-)
+maj_donnees_sd_atlas(df_a_jour, df_precedent)
 }
 \arguments{
-\item{fichier_shp_a_jour}{Caractère. Chemin vers le fichier shapefile contenant les données à jour.}
+\item{df_a_jour}{Nom du dataframe contenant les données à jour.}
 
-\item{fichier_csv_precedent}{Caractère. Chemin vers le fichier csv de la précédente livraison
+\item{df_precedent}{Nom du dataframe contenant les données de la précédente livraison
 de données à la plateforme.}
-
-\item{fichier_csv_a_jour}{Caractère. Chemin vers le fichier csv à jour.}
 }
 \value{
-Le dataframe avec les données au format souhaité (long, nommage et typage des variables).
+Le dataframe fusionné avec les données au format souhaité et les bons UUID.
 }
 \description{
 La fonction compare une version à jour du ficj=hier de données QG
 }
 \examples{
 \dontrun{
-maj_donnees_sd_atlas(
+data <- maj_donnees_sd_atlas(
   fichier_shp_a_jour = "donnees_brutes/atlas.shp",
-  fichier_csv_precedent = "donnees_traitees/2020_08_16_peches_sd_ofb_atlas.csv",
-  fichier_csv_a_jour = "donnees_traitees/2021_08_16_peches_sd_ofb_atlas.csv"
+  fichier_csv_precedent = "donnees_traitees/2020_08_16_peches_sd_ofb_atlas.csv"
 )
 }
 }

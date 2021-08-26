@@ -4,10 +4,20 @@
 \alias{mef_donnees_sd_atlas}
 \title{Mettre en former les données de pêches SD OFB pour la plateforme régionale des données naturalistes}
 \usage{
-mef_donnees_sd_atlas(fichier_shp_a_jour, crs_init = 2154, crs_fin = 4326)
+mef_donnees_sd_atlas(
+  fichier_shp_a_jour,
+  passerelle_taxonomique,
+  crs_init = 2154,
+  crs_fin = 4326
+)
 }
 \arguments{
 \item{fichier_shp_a_jour}{Caractère. Chemin vers le fichier shapefile contenant les données à jour.}
+
+\item{passerelle_taxonomique}{Dataframe permettant la correspondance entre les codes espèces à trois
+lettres et les identifiants Taxref. Il est fourni par le package {aspe} et doit
+comprendre des variables nommées esp_code_alternatif, esp_code_sandre, esp_id, esp_nom_latin et
+esp_code_taxref.}
 
 \item{crs_init}{Numérique. Code EPSG du CRS initial. Par défaut c'est 2154 (Lambert 93).}
 

@@ -3,6 +3,10 @@
 #' La fonction compare une version à jour du ficj=hier de données QG
 #'
 #' @param fichier_shp_a_jour Caractère. Chemin vers le fichier shapefile contenant les données à jour.
+#' @param passerelle_taxonomique Dataframe permettant la correspondance entre les codes espèces à trois
+#'     lettres et les identifiants Taxref. Il est fourni par le package {aspe} et doit
+#'     comprendre des variables nommées esp_code_alternatif, esp_code_sandre, esp_id, esp_nom_latin et
+#'     esp_code_taxref.
 #' @param crs_init Numérique. Code EPSG du CRS initial. Par défaut c'est 2154 (Lambert 93).
 #' @param crs_fin Numérique. Code EPSG du CRS de sortie. Par défaut c'est 4326 (WGS84).
 #'
@@ -27,6 +31,7 @@
 #'   fichier_shp_a_jour = "donnees_brutes/atlas.shp")
 #' }
 mef_donnees_sd_atlas <- function(fichier_shp_a_jour,
+                                 passerelle_taxonomique,
                                  crs_init = 2154,
                                  crs_fin = 4326)
 
@@ -99,9 +104,8 @@ mef_donnees_sd_atlas <- function(fichier_shp_a_jour,
 
 
   # ajout des codes taxref ; gestion des vandoises indéterminées VAX
-  data("passerelle_taxo")
   df <- df %>%
-    left_join(y = passerelle_taxo %>%
+    left_join(y = passerelle_taxonomique %>%
                 rename(code_espece = esp_code_alternatif)) %>%
     select(-esp_code_sandre, -esp_id, -esp_nom_latin) %>%
     mutate(

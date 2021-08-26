@@ -1,7 +1,7 @@
 Package: of3b
 Type: Package
 Title: Package R pour verser des données OFB vers la plateforme régionale du SINP Biodiv'Bretagne
-Version: 0.1.0
+Version: 0.1.2
 Author: Pascal Irz <pascal.irz@ofb.gouv.fr>
 Maintainer: Pascal Irz <pascal.irz@ofb.gouv.fr>
 Description: Il s'agit de fonctions pour mettre en forme les données régionales de la DR OFB Bretagne
