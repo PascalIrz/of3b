@@ -3,4 +3,5 @@ utils::globalVariables(c('.', 'esp_nom_latin', 'localisation', 'ope_id', 'passer
   'uuid', 'x_wgs84', 'y_wgs84',
   'ABH', 'Bassin', 'Date_modif', 'Date_peche', 'Date_saisi', 'IDD', 'VAX', 'annee',
   'code_espece', 'code_station', 'date_peche', 'effectif', 'effectif.x', 'effectif.y',
-  'esp_code_alternatif', 'esp_code_sandre', 'esp_code_taxref', 'esp_id'))
+  'esp_code_alternatif', 'esp_code_sandre', 'esp_code_taxref', 'esp_id',
+  'date_modif', 'date_saisie'))

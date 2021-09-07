@@ -68,7 +68,10 @@ mef_donnees_sd_atlas <- function(fichier_shp_a_jour,
 
   # gestion de qq cas particuliers de codes
   df <- df %>%
-    recode_and_filter_species()
+    recode_and_filter_species()  %>%
+    mutate(code_espece = ifelse(code_espece %in% c("VAX", "VAN"),
+                                yes = "VAR",
+                                no = code_espece))
 
   # agrégation pour éviter des doublons s'il y a eu des regroupements de taxons
   df <- df %>%
@@ -103,17 +106,11 @@ mef_donnees_sd_atlas <- function(fichier_shp_a_jour,
 
 
 
-  # ajout des codes taxref ; gestion des vandoises indéterminées VAX
+  # ajout des codes taxref ; gestion des vandoises indéterminées VAX (slt des VAR en Bretagne)
   df <- df %>%
     left_join(y = passerelle_taxonomique %>%
                 rename(code_espece = esp_code_alternatif)) %>%
-    select(-esp_code_sandre, -esp_id, -esp_nom_latin) %>%
-    mutate(
-      esp_code_taxref = ifelse(
-        is.na(esp_code_taxref) & code_espece == "VAX",
-        yes = 194072,
-        no = esp_code_taxref)
-    )
+    select(-esp_code_sandre, -esp_id, -esp_nom_latin)
 
   df
 
