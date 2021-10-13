@@ -1,6 +1,4 @@
-#' Mettre en former les données de pêches SD OFB pour la plateforme régionale des données naturalistes
-#'
-#' La fonction compare une version à jour du ficj=hier de données QG
+#' Mettre en forme les données de pêches SD OFB pour la plateforme régionale des données naturalistes
 #'
 #' @param fichier_shp_a_jour Caractère. Chemin vers le fichier shapefile contenant les données à jour.
 #' @param passerelle_taxonomique Dataframe permettant la correspondance entre les codes espèces à trois
@@ -13,7 +11,7 @@
 #' @return Le dataframe avec les données au format souhaité (long, nommage et typage des variables).
 #' @export
 #'
-#' @importFrom atlas get_coords recode_and_filter_species
+#' @importFrom atlaspoissons get_coords recode_and_filter_species
 #' @importFrom dplyr mutate select mutate_at vars bind_cols left_join across summarise ungroup rename
 #' @importFrom magrittr %>%
 #' @importFrom dplyr group_by

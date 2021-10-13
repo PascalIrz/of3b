@@ -2,7 +2,7 @@
 % Please edit documentation in R/mef_donnees_sd_atlas.R
 \name{mef_donnees_sd_atlas}
 \alias{mef_donnees_sd_atlas}
-\title{Mettre en former les données de pêches SD OFB pour la plateforme régionale des données naturalistes}
+\title{Mettre en forme les données de pêches SD OFB pour la plateforme régionale des données naturalistes}
 \usage{
 mef_donnees_sd_atlas(
   fichier_shp_a_jour,
@@ -27,7 +27,7 @@ esp_code_taxref.}
 Le dataframe avec les données au format souhaité (long, nommage et typage des variables).
 }
 \description{
-La fonction compare une version à jour du ficj=hier de données QG
+Mettre en forme les données de pêches SD OFB pour la plateforme régionale des données naturalistes
 }
 \examples{
 \dontrun{

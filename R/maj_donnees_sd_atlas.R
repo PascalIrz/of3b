@@ -1,6 +1,7 @@
 #' Mettre à jour les données de pêches SD OFB pour la plateforme régionale des données naturalistes
 #'
-#' La fonction compare une version à jour du ficj=hier de données QG
+#' La fonction compare une version à jour du tableau de données mis en forme par la fonction mef_donnees_sd_atlas()
+#'     avec une version antérieure préparée avec la même fonction.
 #'
 #' @param df_a_jour Nom du dataframe contenant les données à jour.
 #' @param df_precedent Nom du dataframe contenant les données de la précédente livraison

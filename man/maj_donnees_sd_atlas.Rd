@@ -16,7 +16,8 @@ de données à la plateforme.}
 Le dataframe fusionné avec les données au format souhaité et les bons UUID.
 }
 \description{
-La fonction compare une version à jour du ficj=hier de données QG
+La fonction compare une version à jour du tableau de données mis en forme par la fonction mef_donnees_sd_atlas()
+    avec une version antérieure préparée avec la même fonction.
 }
 \examples{
 \dontrun{
